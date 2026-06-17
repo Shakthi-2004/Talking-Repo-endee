@@ -24,9 +24,6 @@ data/*
 .vscode/
 .vscode/*
 
-# Frontend
-frontend/
-frontend/*
 
 # DS Store
 .DS_Store

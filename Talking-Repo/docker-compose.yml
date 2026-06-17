@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ../docker/backend.Dockerfile
+    environment:
+      MONGO_URL: mongodb://mongo:27017
+      DB_NAME: endee_codebase
+      CORS_ORIGINS: "*"
+      GEMINI_LLM_KEY: ${GEMINI_LLM_KEY}
+      ENDEE_TOKEN: ${ENDEE_TOKEN:-}
+      ENDEE_BASE_URL: ${ENDEE_BASE_URL:-}
+      VECTOR_STORE_BACKEND: ${VECTOR_STORE_BACKEND:-auto}
+      REPO_DATA_DIR: /data/repos
+    depends_on: [mongo]
+    volumes:
+      - repo_data:/data/repos
+    ports:
+      - "8001:8001"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../docker/frontend.Dockerfile
+    environment:
+      REACT_APP_BACKEND_URL: http://localhost:8001
+    depends_on: [backend]
+    ports:
+      - "3000:3000"
+
+volumes:
+  mongo_data:
+  repo_data:
