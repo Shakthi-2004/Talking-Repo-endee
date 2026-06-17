@@ -1,139 +1,196 @@
-<p align="center">
-  <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.svg">
-      <source media="(prefers-color-scheme: light)" srcset="docs/assets/logo-light.svg">
-      <img height="100" alt="Endee" src="docs/assets/logo-dark.svg">
-  </picture>
-</p>
+# AI Codebase Assistant — Endee Vector Database
 
-<p align="center">
-    <b>High-performance open-source vector database for AI search, RAG, semantic search, and hybrid retrieval.</b>
-</p>
+> A production-grade RAG application that ingests GitHub repositories into the **Endee** vector database, then lets developers semantically search, chat with, and audit any codebase in seconds.
 
-<p align="center">
-    <a href="./docs/getting-started.md"><img src="https://img.shields.io/badge/Quick_Start-Local_Setup-success?style=flat-square" alt="Quick Start"></a>
-    <a href="https://docs.endee.io/quick-start"><img src="https://img.shields.io/badge/Docs-Quick_Start-success?style=flat-square" alt="Docs"></a>
-    <a href="https://github.com/endee-io/endee/blob/master/LICENSE"><img src="https://img.shields.io/github/license/endee-io/endee?style=flat-square" alt="License"></a>
-    <a href="https://discord.gg/5HFGqDZQE3"><img src="https://img.shields.io/badge/Discord-Join_Chat-5865F2?logo=discord&style=flat-square" alt="Discord"></a>
-    <a href="https://endee.io/"><img src="https://img.shields.io/badge/Website-Endee-111111?style=flat-square" alt="Website"></a>
-    <!-- <a href="https://endee.io/benchmarks"><img src="https://img.shields.io/badge/Benchmarks-Coming_Soon-1F8B4C?style=flat-square" alt="Benchmarks"></a> -->
-    <!-- <a href="https://endee.io/cloud"><img src="https://img.shields.io/badge/Cloud-Coming_Soon-2496ED?style=flat-square" alt="Cloud"></a> -->
-</p>
+Built for the **Endee Labs internship evaluation**. Endee is a first-class, documented, and architecturally central piece — not a swappable detail.
 
-<p align="center">
-<strong><a href="./docs/getting-started.md">Quick Start</a> • <a href="#why-endee">Why Endee</a> • <a href="#use-cases">Use Cases</a> • <a href="#features">Features</a> • <a href="#api-and-clients">API and Clients</a> • <a href="#docs-and-links">Docs</a> • <a href="#community-and-contact">Contact</a></strong>
-</p>
+---
 
-# Endee: Open-Source Vector Database for AI Search
+## Problem Statement
 
-**Endee** is a high-performance open-source vector database built for AI search and retrieval workloads. It is designed for teams building **RAG pipelines**, **semantic search**, **hybrid search**, recommendation systems, and filtered vector retrieval APIs that need production-oriented performance and control.
+Developers regularly spend **hours** orienting themselves in unfamiliar codebases — searching for the auth flow, untangling dependencies, finding the right entry point. This application turns that exploration into a one-shot conversation: drop in any public GitHub repo (or .zip), then ask natural-language questions and get answers backed by exact code citations.
 
-Endee combines vector search with filtering, sparse retrieval support, backup workflows, and deployment flexibility across local builds and Docker-based environments. The project is implemented in C++ and optimized for modern CPU targets, including AVX2, AVX512, NEON, and SVE2.
-
-If you want the fastest path to evaluate Endee locally, start with the [Getting Started guide](./docs/getting-started.md) or the hosted docs at [docs.endee.io](https://docs.endee.io/quick-start).
-
-## Why Endee
-
-- Built as a dedicated vector database for AI applications, search systems, and retrieval-heavy workloads.
-- Supports dense vector retrieval plus sparse search capabilities for hybrid search use cases.
-- Includes payload filtering for metadata-aware retrieval and application-specific query logic.
-- Ships with operational features already documented in this repo, including backup flows and runtime observability.
-- Offers flexible deployment paths: local scripts, manual builds, Docker images, and prebuilt registry images.
-
-## Getting Started
-
-The full installation, build, Docker, runtime, and authentication instructions are in [docs/getting-started.md](./docs/getting-started.md).
-
-Fastest local path:
-
-```bash
-chmod +x ./install.sh ./run.sh
-./install.sh --release --avx2
-./run.sh
-```
-
-The server listens on port `8080`. For detailed setup paths, supported operating systems, CPU optimization flags, Docker usage, and authentication examples, use:
-
-- [Getting Started](./docs/getting-started.md)
-- [Hosted Quick Start Docs](https://docs.endee.io/quick-start)
-
-## Use Cases
-
-### RAG and AI Retrieval
-
-Use Endee as the retrieval layer for question answering, chat assistants, copilots, and other RAG applications that need fast vector search with metadata-aware filtering.
-
-### Agentic AI and AI Agent Memory
-
-Use Endee as the long-term memory and context retrieval layer for AI agents built with frameworks like LangChain, CrewAI, AutoGen, and LlamaIndex. Store and retrieve past observations, tool outputs, conversation history, and domain knowledge mid-execution with low-latency filtered vector search, so your autonomous agents get the right context without stalling their reasoning loop.
-
-### Semantic Search
-
-Build semantic search experiences for documents, products, support content, and knowledge bases using vector similarity search instead of exact keyword-only matching.
-
-### Hybrid Search
-
-Combine dense retrieval, sparse vectors, and filtering to improve relevance for search workflows where both semantic understanding and term-level precision matter.
-
-### Recommendations and Matching
-
-Support recommendation, similarity matching, and nearest-neighbor retrieval workflows across text, embeddings, and other high-dimensional representations.
+---
 
 ## Features
 
-- **Vector search** for AI retrieval and semantic similarity workloads.
-- **Hybrid retrieval support** with sparse vector capabilities documented in [docs/sparse.md](./docs/sparse.md).
-- **Payload filtering** for structured retrieval logic documented in [docs/filter.md](./docs/filter.md).
-- **Backup APIs and flows** documented in [docs/backup-system.md](./docs/backup-system.md).
-- **Operational logging and instrumentation** documented in [docs/logs.md](./docs/logs.md) and [docs/mdbx-instrumentation.md](./docs/mdbx-instrumentation.md).
-- **CPU-targeted builds** for AVX2, AVX512, NEON, and SVE2 deployments.
-- **Docker deployment options** for local and server environments.
+| # | Feature | Notes |
+|---|---|---|
+| 1 | **Repository ingestion** | Public GitHub URL **or** ZIP upload. `node_modules / .git / dist / build / venv / binaries` are auto-ignored. |
+| 2 | **AST-aware intelligent chunking** | Python: real `ast` parsing into class / function / method / module units. JS / TS / Java / Go etc.: regex-based class/function detection. **No fixed-size chunking.** |
+| 3 | **Embeddings** | `sentence-transformers/all-MiniLM-L6-v2` (384-dim). |
+| 4 | **Endee vector database** | Default and primary vector backend. Collections: `code_chunks`, `documentation`, `architecture_notes`. Insert / update / delete / similarity search are all routed through the Endee SDK. |
+| 5 | **Semantic code search** | Top-k retrieval with score + file path + language + chunk type. Filterable by `repository_id`. |
+| 6 | **RAG chat** | Powered by **Gemini flash 2.5** via `Google`. Multi-turn, session-aware, with inline citations. |
+| 7 | **Architecture generator** | Tech-stack detection, folder tree, language breakdown, API routes, dependency graph. |
+| 8 | **Code relationship graph** | Module nodes + import edges, rendered as an SVG radial graph. |
+| 9 | **Repository health report** | Largest files, most connected modules, possible dead code, circular dependencies. |
 
-## API and Clients
+---
 
-Endee exposes an HTTP API for managing indexes and serving retrieval workloads. The current repo documentation and examples focus on running the server directly and calling its API endpoints.
+## System Architecture
 
-Current developer entry points:
+```mermaid
+flowchart LR
+  U[User] -->|ZIP / GitHub URL| FE[React Frontend]
+  FE -->|/api/*| API[FastAPI Backend]
+  API --> Ingest[Repo Ingest]
+  Ingest --> Chunk[AST Chunker]
+  Chunk --> Embed[MiniLM-L6-v2]
+  Embed --> Endee[(Endee Vector DB)]
+  FE -->|query| API
+  API --> Endee
+  API --> Google[Gemini 2.5 flash]
+  Endee -. retrieved context .-> Gemini
+  Gemini --> API --> FE
+  API --> Mongo[(MongoDB)]
+```
 
-- [Getting Started](./docs/getting-started.md) for local build and run flows
-- [Hosted Docs](https://docs.endee.io/quick-start) for product documentation
-- [Release Notes 1.0.0](https://github.com/endee-io/endee/releases/tag/1.0.0) for recent platform changes
+**Runtime layers**
 
-## Docs and Links
+- **Frontend** — React 19, React Router 7, Tailwind CSS, Shadcn UI primitives, Lucide icons.
+- **Backend** — FastAPI, Motor (async MongoDB), GitPython, sentence-transformers, LangChain text utilities.
+- **Vector DB** — Endee (primary) with a FAISS local-dev fallback wrapped behind one `VectorStoreBackend` interface (`backend/services/vectorstore.py`).
+- **LLM** — Google Gemini 2.5 Flash via `google-genai` (Free Gemini LLM key).
 
-- [Getting Started](./docs/getting-started.md)
-- [Hosted Documentation](https://docs.endee.io/quick-start)
-- [Release Notes](https://github.com/endee-io/endee/releases/tag/1.0.0)
-- [Sparse Search](./docs/sparse.md)
-- [Filtering](./docs/filter.md)
-- [Backups](./docs/backup-system.md)
+---
 
-## Community and Contact
+## Endee Integration
 
-- Join the community on [Discord](https://discord.gg/5HFGqDZQE3)
-- Visit the website at [endee.io](https://endee.io/)
-- For trademark or branding permissions, contact [enterprise@endee.io](mailto:enterprise@endee.io)
+Endee is at the heart of the retrieval pipeline. The application:
 
-## Contributing
+1. **Connects** to a self-hosted Endee server at `ENDEE_BASE_URL` (default `http://localhost:8080`). The SDK base URL is normalised to `<server>/api/v1` automatically, so you can paste either the origin or the full API URL.
+2. **Creates the `code_chunks` index** with HNSW INT8 precision (4× memory savings, near-FP32 recall):
+   ```python
+   client.create_index(
+       name="code_chunks",
+       dimension=384,
+       space_type="cosine",
+       precision=Precision.INT8,
+   )
+   ```
+3. **Upserts code chunks** with the exact metadata schema required by Endee Labs:
+   ```python
+   index.upsert([{
+       "id": "<repo>::<file>::fn::42-87",
+       "vector": embedding,         # 384-d MiniLM-L6-v2
+       "meta": {
+           "file":       "src/auth.py",
+           "language":   "python",
+           "function":   "verify_token",
+           "class":      None,
+           "repository": "owner/repo"
+       },
+       "filter": {
+           "language":   "python",
+           "repository": "owner/repo"
+       }
+   }])
+   ```
+4. **Queries** with `top_k=5` and a metadata filter so retrieval is always scoped:
+   ```python
+   index.query(vector=q, top_k=5, filter=[{"repository_id": {"$eq": repo_id}}])
+   ```
+5. **Architecture brief** — the Architecture page calls `services.rag.architecture_summary()` which fires **seven distinct semantic probes** ("entry point", "API routes", "data layer", "auth", "config", "background jobs", "external integrations") against the Endee `code_chunks` index and synthesises a Markdown brief from the retrieved chunks. **No additional file scanning happens for this brief — every excerpt comes from Endee.**
+6. **Deletes** by repository when a user removes a repo (per-`repository_id` filter).
 
-We welcome contributions from the community to help make vector search faster and more accessible for everyone.
+**Why Endee** — production-grade HNSW with INT8 quantization, structured metadata filtering, hybrid (dense + sparse) ready, one SDK surface for upsert/query/delete/describe, and explicit support for billions of vectors on a single self-hosted node — well suited to large monorepos.
 
-- Submit pull requests for fixes, features, and improvements
-- Report bugs or performance issues through GitHub issues
-- Propose enhancements for search quality, performance, and deployment workflows
+> **Development fallback** — if Endee is unreachable (e.g. you're running locally without the Endee server started), the app emits a warning and falls back to a file-backed FAISS index that mirrors the same `VectorStoreBackend` interface, so the entire data flow is preserved. Set `VECTOR_STORE_BACKEND=endee` to disable the fallback and fail-fast. See `backend/services/vectorstore.py`.
+
+---
+
+## Installation
+
+### Prerequisites
+- Python 3.11+
+- Node.js 18+ with Yarn
+- MongoDB 6+
+- An Endee account & API token — without one the app uses the FAISS fallback.
+
+### Setup
+```bash
+# Backend
+cd backend
+pip install -r requirements.txt
+
+# Frontend
+cd ../frontend
+yarn install
+```
+
+### Environment
+
+`backend/.env`
+```env
+MONGO_URL="mongodb://localhost:27017"
+DB_NAME="endee_codebase"
+CORS_ORIGINS="*"
+GEMINI_LLM_KEY= GEMINI_LLM_KEY...
+
+# Endee (primary, mandatory)
+ENDEE_ENABLED=true
+ENDEE_BASE_URL=http://localhost:8080
+ENDEE_TOKEN=                       # leave blank if your local Endee has auth disabled
+
+# Development fallback (FAISS) — set to `endee` to disable the fallback
+VECTOR_STORE_BACKEND=auto
+
+REPO_DATA_DIR=./data/repos
+```
+
+`frontend/.env`
+```env
+REACT_APP_BACKEND_URL=http://localhost:8001
+```
+
+## Running Locally
+
+```bash
+# Terminal 1 — backend
+cd backend && uvicorn server:app --host 0.0.0.0 --port 8001 --reload
+
+# Terminal 2 — frontend
+cd frontend && yarn start
+```
+
+Open http://localhost:3000.
+
+## Docker
+
+```bash
+docker compose up --build
+```
+
+`docker-compose.yml` orchestrates MongoDB, the FastAPI backend, and the React frontend.
+
+---
+
+## API Documentation
+
+| Method | Path | Description |
+|---|---|---|
+| `POST` | `/api/github`             | Clone a public GitHub URL and start indexing. |
+| `POST` | `/api/upload`             | Upload a ZIP archive and start indexing. |
+| `POST` | `/api/index/{repo_id}`    | Re-index a repository. |
+| `GET`  | `/api/repositories`       | List all repositories with status & progress. |
+| `GET`  | `/api/repositories/{id}`  | Single repository details. |
+| `DELETE` | `/api/repositories/{id}` | Remove repo files + embeddings. |
+| `POST` | `/api/search`             | Semantic search over a repo's chunks. |
+| `POST` | `/api/chat`               | RAG chat (Gemini Flash 2.5) with citations. |
+| `GET`  | `/api/architecture/{id}`  | Tech-stack, folder tree, API routes, dep-graph. |
+| `GET`  | `/api/health-report/{id}` | Largest files, dead code, circular dependencies. |
+| `GET`  | `/api/vectorstore`        | Vector-DB backend in use + index stats. |
+
+Interactive docs at `/docs` (FastAPI's Swagger UI).
+
+---
+
+## Screenshots
+
+Place screenshots in `/screenshots/` — included placeholders cover the Overview, Upload, Search, Chat, Architecture, and Health Report pages.
+
 
 ## License
 
-Endee is open source software licensed under the **Apache License 2.0**. See the [LICENSE](./LICENSE) file for full terms.
-
-## Trademark and Branding
-
-“Endee” and the Endee logo are trademarks of Endee Labs.
-
-The Apache License 2.0 does not grant permission to use the Endee name, logos, or branding in a way that suggests endorsement or affiliation.
-
-If you offer a hosted or managed service based on this software, you must use your own branding and avoid implying it is an official Endee service.
-
-## Third-Party Software
-
-This project includes or depends on third-party software components licensed under their respective open-source licenses. Use of those components is governed by their own license terms.
+MIT
