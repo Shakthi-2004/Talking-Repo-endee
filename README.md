@@ -1,8 +1,8 @@
 # AI Codebase Assistant — Endee Vector Database
 
-> A production-grade RAG application that ingests GitHub repositories into the **Endee** vector database, then lets developers semantically search, chat with, and audit any codebase in seconds. (The entire project is inside the Talking-Repo folder)
+> A production-grade RAG application that ingests GitHub repositories into the **Endee** vector database, then lets developers semantically search, chat with, and audit any codebase in seconds. 
 
-Built for the **Endee Labs internship evaluation**. Endee is a first-class, documented, and architecturally central piece — not a swappable detail.
+Built for the **Endee Labs internship evaluation**. Endee is a first-class, documented, and architecturally central piece — not a swappable detail. (The entire project is inside the Talking-Repo folder)
 
 ---
 
