@@ -188,7 +188,15 @@ Interactive docs at `/docs` (FastAPI's Swagger UI).
 
 ## Screenshots
 
-Place screenshots in `/screenshots/` — included placeholders cover the Overview, Upload, Search, Chat, Architecture, and Health Report pages.
+<img width="959" height="470" alt="Image" src="https://github.com/user-attachments/assets/f24fc913-611f-468e-8e63-cc3602620ea0" />
+
+<img width="959" height="466" alt="Image" src="https://github.com/user-attachments/assets/4c1fc7fc-9408-49f7-9e59-c7e5d01d8160" />
+
+<img width="959" height="466" alt="Image" src="https://github.com/user-attachments/assets/1e45118f-262c-4a26-8c35-adca882432f7" />
+
+<img width="959" height="470" alt="Image" src="https://github.com/user-attachments/assets/17102fc2-a500-4629-ae64-130a5f41f957" />
+
+<img width="959" height="466" alt="Image" src="https://github.com/user-attachments/assets/d581edde-6188-4599-88cd-63177d6a4d13" />
 
 
 ## License
